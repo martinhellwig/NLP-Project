@@ -11,8 +11,9 @@ import de.tudarmstadt.lt.teaching.nlp4web.project.objects.RightAnswer;
 import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.POS;
 import de.tudarmstadt.ukp.teaching.general.type.Question;
 import de.tudarmstadt.ukp.teaching.general.type.Result;
+import de.tudarmstadt.ukp.wikipedia.api.WikiConstants;
 
-public class DemoRessourceDecider extends JCasConsumer_ImplBase {
+public class DemoRessourceDecider extends JCasConsumer_ImplBase{
 
 	@Override
 	public void process(JCas jcas) throws AnalysisEngineProcessException {
@@ -28,6 +29,9 @@ public class DemoRessourceDecider extends JCasConsumer_ImplBase {
 		for(POS ann : JCasUtil.select(jcas, POS.class)) {
 			System.out.println(ann.getCoveredText() + "; " + ann.getPosValue());
 		}
+		
+		
+		
 		
 		
 		Result result = new Result(jcas);
