@@ -8,6 +8,7 @@ import org.apache.uima.jcas.JCas;
 
 import de.tudarmstadt.lt.teaching.nlp4web.project.objects.QuestionObject;
 import de.tudarmstadt.lt.teaching.nlp4web.project.objects.RightAnswer;
+import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.POS;
 import de.tudarmstadt.ukp.teaching.general.type.Question;
 import de.tudarmstadt.ukp.teaching.general.type.Result;
 
@@ -21,6 +22,12 @@ public class DemoRessourceDecider extends JCasConsumer_ImplBase {
 					q.getAnswer4(), RightAnswer.valueOf(q.getRightAnswer()));
 		}
 		
+
+		
+		
+		for(POS ann : JCasUtil.select(jcas, POS.class)) {
+			System.out.println(ann.getCoveredText() + "; " + ann.getPosValue());
+		}
 		
 		
 		Result result = new Result(jcas);

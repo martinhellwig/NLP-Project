@@ -19,6 +19,7 @@ import de.tudarmstadt.lt.teaching.nlp4web.project.decider.DemoRessourceDecider;
 import de.tudarmstadt.lt.teaching.nlp4web.project.objects.ChosenOnes;
 import de.tudarmstadt.lt.teaching.nlp4web.project.objects.QuestionObject;
 import de.tudarmstadt.ukp.dkpro.core.jazzy.SpellChecker;
+import de.tudarmstadt.ukp.dkpro.core.stanfordnlp.StanfordPosTagger;
 import de.tudarmstadt.ukp.dkpro.core.stanfordnlp.StanfordSegmenter;
 import de.tudarmstadt.ukp.teaching.general.type.Question;
 import de.tudarmstadt.ukp.teaching.general.type.Result;
@@ -49,10 +50,12 @@ public class Pipeline {
 	}
 
 	private static AnalysisEngine[] getAnalysisEngines() throws ResourceInitializationException {
-		AnalysisEngine[] output = new AnalysisEngine[3];
+		AnalysisEngine[] output = new AnalysisEngine[4];
 		output[0] = createEngine(StanfordSegmenter.class);	        
 	    output[1] = createEngine(SpellChecker.class, SpellChecker.PARAM_MODEL_LOCATION, "res/words");
-	    output[2] = createEngine(DemoRessourceDecider.class);
+	    output[2] = createEngine(StanfordPosTagger.class);
+	    output[3] = createEngine(DemoRessourceDecider.class);
+	    
 
 	    return output;
 	}
