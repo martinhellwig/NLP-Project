@@ -16,9 +16,11 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 
 import de.tudarmstadt.lt.teaching.nlp4web.project.decider.DemoRessourceDecider;
+import de.tudarmstadt.lt.teaching.nlp4web.project.decider.GoogleAmountDecider;
 import de.tudarmstadt.lt.teaching.nlp4web.project.objects.ChosenOnes;
 import de.tudarmstadt.lt.teaching.nlp4web.project.objects.QuestionObject;
-import de.tudarmstadt.ukp.dkpro.core.jazzy.SpellChecker;
+import de.tudarmstadt.ukp.dkpro.core.stanfordnlp.StanfordLemmatizer;
+import de.tudarmstadt.ukp.dkpro.core.stanfordnlp.StanfordNamedEntityRecognizer;
 import de.tudarmstadt.ukp.dkpro.core.stanfordnlp.StanfordPosTagger;
 import de.tudarmstadt.ukp.dkpro.core.stanfordnlp.StanfordSegmenter;
 import de.tudarmstadt.ukp.teaching.general.type.Question;
@@ -42,6 +44,9 @@ public class Pipeline {
 				analysisEngines[1], analysisEngines[2], analysisEngines[3], writer);
 		else if(analysisEngines.length == 5) SimplePipeline.runPipeline(reader, analysisEngines[0], 
 				analysisEngines[1], analysisEngines[2], analysisEngines[3], analysisEngines[4], writer);
+		else if(analysisEngines.length == 6) SimplePipeline.runPipeline(reader, analysisEngines[0], 
+				analysisEngines[1], analysisEngines[2], analysisEngines[3], analysisEngines[4], analysisEngines[5], 
+				writer);
 		
 		System.out.println(100 * ((float) Evaluate.mainPrecision/ (float) Evaluate.amountData) + "% of all were chosen right");
 		for(int i = 0; i < Evaluate.precisions.size(); i++) {
@@ -50,12 +55,13 @@ public class Pipeline {
 	}
 
 	private static AnalysisEngine[] getAnalysisEngines() throws ResourceInitializationException {
-		AnalysisEngine[] output = new AnalysisEngine[4];
-		output[0] = createEngine(StanfordSegmenter.class);	        
-	    output[1] = createEngine(SpellChecker.class, SpellChecker.PARAM_MODEL_LOCATION, "res/words");
+		AnalysisEngine[] output = new AnalysisEngine[6];
+		output[0] = createEngine(StanfordSegmenter.class); //Have to use this; Other ones need the segmentation     
+	    output[1] = createEngine(StanfordLemmatizer.class);
 	    output[2] = createEngine(StanfordPosTagger.class);
-	    output[3] = createEngine(DemoRessourceDecider.class);
-	    
+	    output[3] = createEngine(StanfordNamedEntityRecognizer.class);
+	    output[4] = createEngine(DemoRessourceDecider.class);
+	    output[5] = createEngine(GoogleAmountDecider.class);
 
 	    return output;
 	}
@@ -85,6 +91,7 @@ public class Pipeline {
 		else if(analysisEngines.length == 3) SimplePipeline.runPipeline(jcas, analysisEngines[0], analysisEngines[1], analysisEngines[2]);
 		else if(analysisEngines.length == 4) SimplePipeline.runPipeline(jcas, analysisEngines[0], analysisEngines[1], analysisEngines[2], analysisEngines[3]);
 		else if(analysisEngines.length == 5) SimplePipeline.runPipeline(jcas, analysisEngines[0], analysisEngines[1], analysisEngines[2], analysisEngines[3], analysisEngines[4]);
+		else if(analysisEngines.length == 6) SimplePipeline.runPipeline(jcas, analysisEngines[0], analysisEngines[1], analysisEngines[2], analysisEngines[3], analysisEngines[4], analysisEngines[5]);
 		
 		//Output in ChosenOnes Objects and give them back
 		ArrayList<ChosenOnes> results = new ArrayList<>();
