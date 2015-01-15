@@ -1,7 +1,6 @@
 package de.tudarmstadt.lt.teaching.nlp4web.project;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -10,7 +9,6 @@ import org.apache.uima.UimaContext;
 import org.apache.uima.collection.CollectionException;
 import org.apache.uima.fit.component.JCasCollectionReader_ImplBase;
 import org.apache.uima.jcas.JCas;
-import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.util.Progress;
 import org.apache.uima.util.ProgressImpl;
 
@@ -42,17 +40,16 @@ public class TSVReader extends JCasCollectionReader_ImplBase {
 				String answer4 = values[4];
 				
 				RightAnswer rightAnswer = null;
-				if(values[5].equals(answer1)) rightAnswer = RightAnswer.FIRST;
-				else if(values[5].equals(answer2)) rightAnswer = RightAnswer.SECOND;
-				else if(values[5].equals(answer3)) rightAnswer = RightAnswer.THIRD;
-				else if(values[5].equals(answer4)) rightAnswer = RightAnswer.FOURTH;
+				if(values[5].trim().equals(answer1.trim())) rightAnswer = RightAnswer.FIRST;
+				else if(values[5].trim().equals(answer2.trim())) rightAnswer = RightAnswer.SECOND;
+				else if(values[5].trim().equals(answer3.trim())) rightAnswer = RightAnswer.THIRD;
+				else if(values[5].trim().equals(answer4.trim())) rightAnswer = RightAnswer.FOURTH;
 				
 				questions.add(new QuestionObject(question, answer1, answer2, answer3, answer4, rightAnswer));
 			}
 			in.close();
-		} catch (ResourceInitializationException e) {
-		} catch (FileNotFoundException e) {
-		} catch (IOException e) {
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 	

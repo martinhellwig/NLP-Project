@@ -59,16 +59,22 @@ public class Evaluate extends JCasConsumer_ImplBase {
 					question.getRightAnswer() == RightAnswer.FIRST) {
 				precisions.set(amount, precisions.get(amount) + 1);
 				foundRightAnswer = true;
-			} else if(chosenOne.getPossibilityAnswer2() >= chosenOne.getPossibilityAnswer3() &&
+			} else if(chosenOne.getPossibilityAnswer2() >= chosenOne.getPossibilityAnswer1() &&
+					chosenOne.getPossibilityAnswer2() >= chosenOne.getPossibilityAnswer3() &&
 					chosenOne.getPossibilityAnswer2() >= chosenOne.getPossibilityAnswer4() &&
 					question.getRightAnswer() == RightAnswer.SECOND) {
 				precisions.set(amount, precisions.get(amount) + 1);
 				foundRightAnswer = true;
-			} else if(chosenOne.getPossibilityAnswer3() >= chosenOne.getPossibilityAnswer4() &&
+			} else if(chosenOne.getPossibilityAnswer3() >= chosenOne.getPossibilityAnswer1() &&
+					chosenOne.getPossibilityAnswer3() >= chosenOne.getPossibilityAnswer2() &&
+					chosenOne.getPossibilityAnswer3() >= chosenOne.getPossibilityAnswer4() &&
 					question.getRightAnswer() == RightAnswer.THIRD) {
 				precisions.set(amount, precisions.get(amount) + 1);
 				foundRightAnswer = true;
-			} else if(question.getRightAnswer() == RightAnswer.FOURTH) {
+			} else if(chosenOne.getPossibilityAnswer4() >= chosenOne.getPossibilityAnswer1() &&
+					chosenOne.getPossibilityAnswer4() >= chosenOne.getPossibilityAnswer2() &&
+							chosenOne.getPossibilityAnswer4() >= chosenOne.getPossibilityAnswer3() &&
+					question.getRightAnswer() == RightAnswer.FOURTH) {
 				precisions.set(amount, precisions.get(amount) + 1);
 				foundRightAnswer = true;
 			}

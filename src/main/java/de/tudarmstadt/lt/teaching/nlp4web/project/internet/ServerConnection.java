@@ -5,6 +5,8 @@ import java.io.InputStreamReader;
 import java.security.KeyStore;
 import java.util.List;
 
+import org.apache.http.conn.ssl.SSLSocketFactory;
+import org.apache.commons.codec.binary.Base64;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpVersion;
 import org.apache.http.NameValuePair;
@@ -38,9 +40,13 @@ public class ServerConnection {
             HttpParams params = new BasicHttpParams();
             HttpProtocolParams.setVersion(params, HttpVersion.HTTP_1_1);
             HttpProtocolParams.setContentCharset(params, HTTP.UTF_8);
+            
+            SSLSocketFactory sf = new MySSLSocketFactory(trustStore);
+            sf.setHostnameVerifier(SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
 
             SchemeRegistry registry = new SchemeRegistry();
             registry.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
+            registry.register(new Scheme("https", sf, 443));
 
             ClientConnectionManager ccm = new ThreadSafeClientConnManager(params, registry);
 
@@ -49,6 +55,34 @@ public class ServerConnection {
             return new DefaultHttpClient();
         }
     }
+	
+	public String getJSONFromUrl(String url, List<NameValuePair> params, String apiKey) {
+		try {
+	    	DefaultHttpClient httpClient = getNewHttpClient();
+	    	HttpGet httpGet = new HttpGet(url);
+	    	
+	    	byte[] accountKeyBytes = Base64.encodeBase64((":" + apiKey).getBytes());
+	    	String accountKeyEnc = new String(accountKeyBytes);
+	    	httpGet.setHeader("Authorization", "Basic" + " " + accountKeyEnc);
+	        StringBuilder stringBuilder = new StringBuilder();
+	        
+	        HttpResponse response = httpClient.execute(httpGet);
+	        int statusCode = response.getStatusLine().getStatusCode();
+	        if (statusCode == 200) {
+	        	BufferedReader reader = new BufferedReader(
+	        			new InputStreamReader(response.getEntity().getContent()));
+	        	
+	        	String line;
+	        	while ((line = reader.readLine()) != null) {
+	        			stringBuilder.append(line);
+	        	}    
+	        	return stringBuilder.toString();
+	        }
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return "bla";
+	}
  
 	public String getJSONFromUrl(String url, List<NameValuePair> params) {
 		try {

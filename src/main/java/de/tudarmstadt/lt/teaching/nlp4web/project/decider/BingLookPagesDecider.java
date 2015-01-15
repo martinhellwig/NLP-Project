@@ -1,19 +1,23 @@
 package de.tudarmstadt.lt.teaching.nlp4web.project.decider;
 
 
+import java.io.IOException;
+import java.util.ArrayList;
+
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.fit.component.JCasConsumer_ImplBase;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
-import de.tudarmstadt.lt.teaching.nlp4web.project.internet.GoogleRequest;
+import org.jsoup.Jsoup;
+
+import de.tudarmstadt.lt.teaching.nlp4web.project.HelpFunctions;
+import de.tudarmstadt.lt.teaching.nlp4web.project.internet.BingRequest;
 import de.tudarmstadt.lt.teaching.nlp4web.project.objects.QuestionObject;
 import de.tudarmstadt.lt.teaching.nlp4web.project.objects.RightAnswer;
-import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.POS;
-import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Lemma;
 import de.tudarmstadt.ukp.teaching.general.type.Question;
 import de.tudarmstadt.ukp.teaching.general.type.Result;
 
-public class GoogleAmountDecider extends JCasConsumer_ImplBase{
+public class BingLookPagesDecider extends JCasConsumer_ImplBase{
 
 	@Override
 	public void process(JCas jcas) throws AnalysisEngineProcessException {
@@ -23,31 +27,37 @@ public class GoogleAmountDecider extends JCasConsumer_ImplBase{
 					q.getAnswer4(), RightAnswer.valueOf(q.getRightAnswer()));
 		}
 		
-
-		String posTags = "";
+		int amountAnswer1 = 0;
+		int amountAnswer2 = 0;
+		int amountAnswer3 = 0;
+		int amountAnswer4 = 0;
 		
-		for(POS pos : JCasUtil.select(jcas, POS.class)) {
-			if(pos.getPosValue().contains("NN")) {
-				for(Lemma lemma : JCasUtil.select(jcas, Lemma.class)) {
-					if(pos.getCoveredText().equals(lemma.getCoveredText())) 
-						posTags += lemma.getValue() + " ";
-				}
+		BingRequest request = new BingRequest(question.getQuestion());
+		ArrayList<String> urls = request.getResultURLs(10);
+		
+		for(int i = 0; i < urls.size(); i++) {
+			String temp;
+			try {
+				temp = Jsoup.connect(urls.get(i)).get().text();
+				amountAnswer1 += HelpFunctions.countWord(temp, question.getAnswer1());
+				amountAnswer2 += HelpFunctions.countWord(temp, question.getAnswer2());
+				amountAnswer3 += HelpFunctions.countWord(temp, question.getAnswer3());
+				amountAnswer4 += HelpFunctions.countWord(temp, question.getAnswer4());
+			} catch (IOException e) {
 			}
 		}
 		
-		GoogleRequest answer1Request = new GoogleRequest(posTags + question.getAnswer1());
-		int amountAnswer1 = answer1Request.getResultAmount();
-		GoogleRequest answer2Request = new GoogleRequest(posTags + question.getAnswer2());
-		int amountAnswer2 = answer2Request.getResultAmount();
-		GoogleRequest answer3Request = new GoogleRequest(posTags + question.getAnswer3());
-		int amountAnswer3 = answer3Request.getResultAmount();
-		GoogleRequest answer4Request = new GoogleRequest(posTags + question.getAnswer4());
-		int amountAnswer4 = answer4Request.getResultAmount();
+		if(amountAnswer1 == 0 && amountAnswer2 == 0 && amountAnswer3 == 0 && amountAnswer4 == 0) {
+			amountAnswer1++;
+			amountAnswer2++;
+			amountAnswer3++;
+			amountAnswer4++;
+		}
+		
 		int amountOfAll = amountAnswer1 + amountAnswer2 + amountAnswer3 + amountAnswer4;
 		
-		
 		Result result = new Result(jcas);
-		result.setRessouceType("Google Amount");
+		result.setRessouceType("Bing Look Pages");
 		result.setAnswer1Possibility((float) amountAnswer1 / (float) amountOfAll);
 		result.setAnswer2Possibility((float) amountAnswer2 / (float) amountOfAll);
 		result.setAnswer3Possibility((float) amountAnswer3 / (float) amountOfAll);

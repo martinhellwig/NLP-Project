@@ -15,8 +15,9 @@ import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 
+import de.tudarmstadt.lt.teaching.nlp4web.project.decider.BingLookPagesDecider;
 import de.tudarmstadt.lt.teaching.nlp4web.project.decider.DemoRessourceDecider;
-import de.tudarmstadt.lt.teaching.nlp4web.project.decider.GoogleAmountDecider;
+import de.tudarmstadt.lt.teaching.nlp4web.project.decider.BingAmountDecider;
 import de.tudarmstadt.lt.teaching.nlp4web.project.decider.WikipediaAmountAnswersDecider;
 import de.tudarmstadt.lt.teaching.nlp4web.project.decider.WikipediaAmountQuestionDecider;
 import de.tudarmstadt.lt.teaching.nlp4web.project.objects.ChosenOnes;
@@ -57,13 +58,13 @@ public class Pipeline {
 	}
 
 	private static AnalysisEngine[] getAnalysisEngines() throws ResourceInitializationException {
-		AnalysisEngine[] output = new AnalysisEngine[6];
+		AnalysisEngine[] output = new AnalysisEngine[5];
 		output[0] = createEngine(StanfordSegmenter.class); //Have to use this; Other ones need the segmentation     
 	    output[1] = createEngine(StanfordLemmatizer.class);
 	    output[2] = createEngine(StanfordPosTagger.class);
-	    output[3] = createEngine(StanfordNamedEntityRecognizer.class);
-	    output[4] = createEngine(WikipediaAmountAnswersDecider.class);
-	    output[5] = createEngine(WikipediaAmountQuestionDecider.class);
+	    output[3] = createEngine(BingLookPagesDecider.class);
+	    output[4] = createEngine(WikipediaAmountQuestionDecider.class);
+	    //output[5] = createEngine(WikipediaAmountQuestionDecider.class);
 
 	    return output;
 	}
