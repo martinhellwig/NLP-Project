@@ -48,6 +48,7 @@ public class Evaluate extends JCasConsumer_ImplBase {
 			possibilityThree += chosenOne.getPossibilityAnswer3();
 			possibilityFour += chosenOne.getPossibilityAnswer4();
 			
+			boolean foundRightAnswer = false;
 			if(amountData == 0) {
 				names.add(chosenOne.getRessourceName());
 				precisions.add(0);
@@ -55,21 +56,26 @@ public class Evaluate extends JCasConsumer_ImplBase {
 			if(chosenOne.getPossibilityAnswer1() >= chosenOne.getPossibilityAnswer2() && 
 					chosenOne.getPossibilityAnswer1() >= chosenOne.getPossibilityAnswer3() &&
 					chosenOne.getPossibilityAnswer1() >= chosenOne.getPossibilityAnswer4() &&
-					question.getRightAnswer() == RightAnswer.FIRST)
+					question.getRightAnswer() == RightAnswer.FIRST) {
 				precisions.set(amount, precisions.get(amount) + 1);
-			else if(chosenOne.getPossibilityAnswer2() >= chosenOne.getPossibilityAnswer3() &&
+				foundRightAnswer = true;
+			} else if(chosenOne.getPossibilityAnswer2() >= chosenOne.getPossibilityAnswer3() &&
 					chosenOne.getPossibilityAnswer2() >= chosenOne.getPossibilityAnswer4() &&
-					question.getRightAnswer() == RightAnswer.SECOND)
+					question.getRightAnswer() == RightAnswer.SECOND) {
 				precisions.set(amount, precisions.get(amount) + 1);
-			else if(chosenOne.getPossibilityAnswer3() >= chosenOne.getPossibilityAnswer4() &&
-					question.getRightAnswer() == RightAnswer.THIRD)
+				foundRightAnswer = true;
+			} else if(chosenOne.getPossibilityAnswer3() >= chosenOne.getPossibilityAnswer4() &&
+					question.getRightAnswer() == RightAnswer.THIRD) {
 				precisions.set(amount, precisions.get(amount) + 1);
-			else if(question.getRightAnswer() == RightAnswer.FOURTH)
+				foundRightAnswer = true;
+			} else if(question.getRightAnswer() == RightAnswer.FOURTH) {
 				precisions.set(amount, precisions.get(amount) + 1);
+				foundRightAnswer = true;
+			}
 			
 			System.out.println(chosenOne.getRessourceName() + ": " + chosenOne.getPossibilityAnswer1() + ", " + 
 					chosenOne.getPossibilityAnswer2() + ", " + chosenOne.getPossibilityAnswer3() + ", " + 
-					chosenOne.getPossibilityAnswer4() + "");
+					chosenOne.getPossibilityAnswer4() + "; Found right Answer: " + foundRightAnswer);
 			amount++;
 		}
 		

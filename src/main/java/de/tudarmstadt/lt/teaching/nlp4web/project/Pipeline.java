@@ -17,6 +17,8 @@ import org.apache.uima.resource.ResourceInitializationException;
 
 import de.tudarmstadt.lt.teaching.nlp4web.project.decider.DemoRessourceDecider;
 import de.tudarmstadt.lt.teaching.nlp4web.project.decider.GoogleAmountDecider;
+import de.tudarmstadt.lt.teaching.nlp4web.project.decider.WikipediaAmountAnswersDecider;
+import de.tudarmstadt.lt.teaching.nlp4web.project.decider.WikipediaAmountQuestionDecider;
 import de.tudarmstadt.lt.teaching.nlp4web.project.objects.ChosenOnes;
 import de.tudarmstadt.lt.teaching.nlp4web.project.objects.QuestionObject;
 import de.tudarmstadt.ukp.dkpro.core.stanfordnlp.StanfordLemmatizer;
@@ -60,8 +62,8 @@ public class Pipeline {
 	    output[1] = createEngine(StanfordLemmatizer.class);
 	    output[2] = createEngine(StanfordPosTagger.class);
 	    output[3] = createEngine(StanfordNamedEntityRecognizer.class);
-	    output[4] = createEngine(DemoRessourceDecider.class);
-	    output[5] = createEngine(GoogleAmountDecider.class);
+	    output[4] = createEngine(WikipediaAmountAnswersDecider.class);
+	    output[5] = createEngine(WikipediaAmountQuestionDecider.class);
 
 	    return output;
 	}
