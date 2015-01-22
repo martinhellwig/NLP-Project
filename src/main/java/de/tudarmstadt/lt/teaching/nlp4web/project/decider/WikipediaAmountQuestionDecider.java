@@ -1,10 +1,14 @@
 package de.tudarmstadt.lt.teaching.nlp4web.project.decider;
 
+import java.util.ArrayList;
+
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.fit.component.JCasConsumer_ImplBase;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 
+import de.tudarmstadt.lt.teaching.nlp4web.project.HelpFunctions;
+import de.tudarmstadt.lt.teaching.nlp4web.project.internet.JoBimRequest;
 import de.tudarmstadt.lt.teaching.nlp4web.project.internet.WikipediaRequest;
 import de.tudarmstadt.lt.teaching.nlp4web.project.objects.QuestionObject;
 import de.tudarmstadt.lt.teaching.nlp4web.project.objects.RightAnswer;
@@ -26,7 +30,12 @@ public class WikipediaAmountQuestionDecider extends JCasConsumer_ImplBase{
 		float amountAnswer1 = 0;
 		float amountAnswer2 = 0;
 		float amountAnswer3 = 0;
-		float amountAnswer4 = 0;		
+		float amountAnswer4 = 0;	
+		
+		//Do JoBim things
+		JoBimRequest joBimRequest = new JoBimRequest(question.getQuestion());
+		ArrayList<String> negotiatedNouns = joBimRequest.getNegotiatedNouns();
+		
 		
 		for(POS pos : JCasUtil.select(jcas, POS.class)) {
 			if(pos.getPosValue().contains("NN")) {
@@ -41,6 +50,11 @@ public class WikipediaAmountQuestionDecider extends JCasConsumer_ImplBase{
 						WikipediaRequest answer4Request = new WikipediaRequest(lemma.getValue());
 						int answer4 = answer4Request.getAmountInText(question.getAnswer4());
 						
+						boolean foundNounAsNegotiated = false;
+						for(String negotiatedNoun : negotiatedNouns) {
+							if(negotiatedNoun.equals(lemma.getValue())) foundNounAsNegotiated = true;
+						}
+						
 						if(answer1 == 0 && answer2 == 0 && answer3 == 0 && answer4 == 0) {
 							answer1++;
 							answer2++;
@@ -50,10 +64,24 @@ public class WikipediaAmountQuestionDecider extends JCasConsumer_ImplBase{
 						int amountAll = answer1 + answer2 + answer3 + answer4;
 						
 						
-						amountAnswer1 += (float) answer1 / (float) amountAll;
-						amountAnswer2 += (float) answer2 / (float) amountAll;
-						amountAnswer3 += (float) answer3 / (float) amountAll;
-						amountAnswer4 += (float) answer4 / (float) amountAll;
+						//Now change all values to the opposite
+						if(foundNounAsNegotiated) {
+							float[] toNegotiate = {(float) answer1 / (float) amountAll, 
+									(float) answer2 / (float) amountAll, 
+									(float) answer3 / (float) amountAll,
+									(float) answer4 / (float) amountAll};
+							float[] negotiatedOnes = HelpFunctions.getOppositePossibilities(toNegotiate);
+							amountAnswer1 += negotiatedOnes[0];
+							amountAnswer2 += negotiatedOnes[1];
+							amountAnswer3 += negotiatedOnes[2];
+							amountAnswer4 += negotiatedOnes[3];
+						}
+						else {
+							amountAnswer1 += (float) answer1 / (float) amountAll;
+							amountAnswer2 += (float) answer2 / (float) amountAll;
+							amountAnswer3 += (float) answer3 / (float) amountAll;
+							amountAnswer4 += (float) answer4 / (float) amountAll;
+						}
 					}
 				}
 			}
@@ -62,10 +90,24 @@ public class WikipediaAmountQuestionDecider extends JCasConsumer_ImplBase{
 		float amountOfAll = amountAnswer1 + amountAnswer2 + amountAnswer3 + amountAnswer4;
 		Result result = new Result(jcas);
 		result.setRessouceType("Wikipedia Amount (Question)");
-		result.setAnswer1Possibility((float) amountAnswer1 / (float) amountOfAll);
-		result.setAnswer2Possibility((float) amountAnswer2 / (float) amountOfAll);
-		result.setAnswer3Possibility((float) amountAnswer3 / (float) amountOfAll);
-		result.setAnswer4Possibility((float) amountAnswer4 / (float) amountOfAll);
+		
+		if(joBimRequest.isWholeSentenceNegotiated()) {
+			float[] toNegotiate = {(float) amountAnswer1 / (float) amountOfAll, 
+					(float) amountAnswer2 / (float) amountOfAll, 
+					(float) amountAnswer3 / (float) amountOfAll,
+					(float) amountAnswer4 / (float) amountOfAll};
+			float[] negotiatedOnes = HelpFunctions.getOppositePossibilities(toNegotiate);
+			result.setAnswer1Possibility(negotiatedOnes[0]);
+			result.setAnswer2Possibility(negotiatedOnes[1]);
+			result.setAnswer3Possibility(negotiatedOnes[2]);
+			result.setAnswer4Possibility(negotiatedOnes[3]);
+		}
+		else {
+			result.setAnswer1Possibility((float) amountAnswer1 / (float) amountOfAll);
+			result.setAnswer2Possibility((float) amountAnswer2 / (float) amountOfAll);
+			result.setAnswer3Possibility((float) amountAnswer3 / (float) amountOfAll);
+			result.setAnswer4Possibility((float) amountAnswer4 / (float) amountOfAll);
+		}
 		result.addToIndexes();
 	}
 

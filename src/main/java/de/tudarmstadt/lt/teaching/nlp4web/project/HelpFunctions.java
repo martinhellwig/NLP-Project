@@ -33,6 +33,16 @@ public class HelpFunctions {
 		input = input.replaceAll("\\(", "%28");
 		input = input.replaceAll("\\)", "%29");
 		input = input.replaceAll("\\'", "%27");
+		input = input.replaceAll("\\|", "%7C");
+		input = input.replaceAll("\\\\", "%5C");		
+		input = input.replaceAll("\\\\u2013", "%2D");
+		input = input.replaceAll("\\\\u00dc", "%DC"); //Ü
+		input = input.replaceAll("\\\\u00fc", "%FC"); //ü
+		input = input.replaceAll("\\\\u00c4", "%C4"); //Ä
+		input = input.replaceAll("\\\\u00e4", "%E4"); //ä
+		input = input.replaceAll("\\\\u00d6", "%D6"); //Ö
+		input = input.replaceAll("\\\\u00f6", "%F6"); //ö
+		
 		return input;
 	}
 	

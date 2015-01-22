@@ -20,7 +20,6 @@ public class BingRequest {
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
 		ServerConnection serverConnection = new ServerConnection();
 		result = serverConnection.getJSONFromUrl(address + HelpFunctions.escapeWebRequest(request) + address2, params, APIKEY);
-		System.out.println(result);
 	}
 	
 	public int getResultAmount() {

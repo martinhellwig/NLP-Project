@@ -13,26 +13,47 @@ public class WikipediaRequest {
 
 	private final String address = "http://en.wikipedia.org/w/api.php?format=json&action=query&titles=";
 	private final String address2 = "&prop=revisions&rvprop=content";
-	private String result;
+	private ArrayList<String> results;
 	
 	public WikipediaRequest(String request) {
+		results = new ArrayList<>();
+		
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
 		ServerConnection serverConnection = new ServerConnection();
-		result = serverConnection.getJSONFromUrl(address + HelpFunctions.escapeWebRequest(request) + address2, params);
+		results.add(serverConnection.getJSONFromUrl(address + HelpFunctions.escapeWebRequest(request) + address2, params));
 		
 		//Look, if its a redirect
 		Pattern pattern = Pattern.compile("#REDIRECT\\s\\[\\[(.*?)\\]\\]");
-		Matcher matcher = pattern.matcher(result);
+		Matcher matcher = pattern.matcher(results.get(0));
 		
 		while (matcher.find()) {
 		    if(matcher.group(1) != null) {
-		    	result = serverConnection.getJSONFromUrl(address + HelpFunctions.escapeWebRequest(matcher.group(1)) + address2, params);
+		    	results = new ArrayList<>();
+		    	results.add(serverConnection.getJSONFromUrl(address + HelpFunctions.escapeWebRequest(matcher.group(1)) + address2, params));
 		    }
 		}
+		
+		//Are there disambiguations?
+//		if(results.get(0).contains("may refer to:")) {
+//			pattern = Pattern.compile("\\[\\[(.*?)\\]\\]");
+//			matcher = pattern.matcher(results.get(0));
+//			
+//			results = new ArrayList<>();
+//			while (matcher.find()) {
+//			    if(matcher.group(1) != null) {
+//			    	results.add(serverConnection.getJSONFromUrl(address + HelpFunctions.escapeWebRequest(matcher.group(1)) + address2, params));
+//			    }
+//			}
+//		}
 	}
 	
 	public int getAmountInText(String keyWord) {
-		return HelpFunctions.countWord(result, keyWord);
+		int output = 0;
+		for(int i = 0; i < results.size(); i++) {
+			output += HelpFunctions.countWord(results.get(i), keyWord);
+		}
+		
+		return output;
 	}
 	
 	

@@ -3,6 +3,8 @@ package de.tudarmstadt.lt.teaching.nlp4web.project.decider;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.fit.component.JCasConsumer_ImplBase;
@@ -32,7 +34,24 @@ public class BingLookPagesDecider extends JCasConsumer_ImplBase{
 		int amountAnswer3 = 0;
 		int amountAnswer4 = 0;
 		
-		BingRequest request = new BingRequest(question.getQuestion());
+		//Is there a quoted term in question? Use this!
+		String requestToAsk = question.getQuestion();
+		Pattern pattern = Pattern.compile("\"(.*?)\"");
+		Matcher matcher = pattern.matcher(question.getQuestion());
+		while (matcher.find()) {
+		    if(matcher.group(1) != null) {
+		    	requestToAsk = matcher.group(1);
+		    }
+		}
+		pattern = Pattern.compile("\\'(.*?)\\'");
+		matcher = pattern.matcher(question.getQuestion());
+		while (matcher.find()) {
+		    if(matcher.group(1) != null) {
+		    	requestToAsk = matcher.group(1);
+		    }
+		}
+		
+		BingRequest request = new BingRequest(requestToAsk);
 		ArrayList<String> urls = request.getResultURLs(10);
 		
 		for(int i = 0; i < urls.size(); i++) {
