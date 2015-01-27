@@ -35,6 +35,11 @@
           <description/>
           <rangeTypeName>uima.cas.Float</rangeTypeName>
         </featureDescription>
+        <featureDescription>
+          <name>usedTime</name>
+          <description/>
+          <rangeTypeName>uima.cas.Integer</rangeTypeName>
+        </featureDescription>
       </features>
     </typeDescription>
   </types>

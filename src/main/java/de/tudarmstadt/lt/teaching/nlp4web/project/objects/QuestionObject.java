@@ -3,8 +3,6 @@ package de.tudarmstadt.lt.teaching.nlp4web.project.objects;
 
 public class QuestionObject {
 	
-	private String delimiter = ";;.;;";
-
 	private String question;
 	private String answer1;
 	private String answer2;
@@ -43,20 +41,5 @@ public class QuestionObject {
 	}
 	public RightAnswer getRightAnswer() {
 		return rightAnswer;
-	}
-	
-	public QuestionObject(String allInOne) {
-		String[] values = allInOne.split(delimiter);
-		this.question = values[0];
-		this.answer1 = values[1];
-		this.answer2 = values[2];
-		this.answer3 = values[3];
-		this.answer4 = values[4];
-		this.rightAnswer = RightAnswer.valueOf(values[5]);
-	}
-	
-	public String toString() {
-		return this.question + delimiter + this.answer1 + delimiter + this.answer2 + 
-				delimiter + this.answer3 + delimiter + this.answer4 + delimiter + this.rightAnswer.toString();
 	}
 }

@@ -29,10 +29,11 @@ public class TSVReader extends JCasCollectionReader_ImplBase {
 			super.initialize(context);
 			index = 0;
 			
+			//reads the given file and creates a new question-object out of each line
 			BufferedReader in = new BufferedReader(new FileReader(PARAM_INPUT_DATA));
 			String line = null;
 			while ((line = in.readLine()) != null) {
-				String[] values = line.split("\t");
+				String[] values = line.split("\t"); //the values are split by tabs
 				String question = values[0];
 				String answer1 = values[1];
 				String answer2 = values[2];
@@ -65,6 +66,7 @@ public class TSVReader extends JCasCollectionReader_ImplBase {
 
 	@Override
 	public void getNext(JCas j) throws IOException, CollectionException {
+		//Simply get the next question-object from the list and add this to jcas
 		Question question = new Question(j);
 		question.setBegin(0);
     	question.setEnd(questions.get(index).getQuestion().length());

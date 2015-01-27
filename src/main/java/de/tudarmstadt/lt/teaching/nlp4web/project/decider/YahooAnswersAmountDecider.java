@@ -15,6 +15,8 @@ public class YahooAnswersAmountDecider extends JCasConsumer_ImplBase {
 
 	@Override
 	public void process(JCas jcas) throws AnalysisEngineProcessException {
+		long startTime = System.currentTimeMillis(); //Need to calculate time for this decider
+		
 		QuestionObject question = null;
 		for (Question q : JCasUtil.select(jcas, Question.class)) {
 			question = new QuestionObject(q.getQuestion(), q.getAnswer1(),
@@ -49,6 +51,7 @@ public class YahooAnswersAmountDecider extends JCasConsumer_ImplBase {
 		result.setAnswer2Possibility((float) answer2 / (float) amountOfAll);
 		result.setAnswer3Possibility((float) answer3 / (float) amountOfAll);
 		result.setAnswer4Possibility((float) answer4 / (float) amountOfAll);
+		result.setUsedTime((int) (System.currentTimeMillis() - startTime));
 		result.addToIndexes();
 	}
 

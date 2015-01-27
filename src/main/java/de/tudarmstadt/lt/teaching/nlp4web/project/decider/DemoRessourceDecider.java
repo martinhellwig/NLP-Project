@@ -5,6 +5,7 @@ import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.fit.component.JCasConsumer_ImplBase;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
+
 import de.tudarmstadt.lt.teaching.nlp4web.project.objects.QuestionObject;
 import de.tudarmstadt.lt.teaching.nlp4web.project.objects.RightAnswer;
 import de.tudarmstadt.ukp.teaching.general.type.Question;
@@ -14,6 +15,8 @@ public class DemoRessourceDecider extends JCasConsumer_ImplBase{
 
 	@Override
 	public void process(JCas jcas) throws AnalysisEngineProcessException {
+		long startTime = System.currentTimeMillis(); //Need to calculate time for this decider
+		
 		QuestionObject question = null;
 		for (Question q : JCasUtil.select(jcas, Question.class)) { 
 			question = new QuestionObject(q.getQuestion(), q.getAnswer1(), q.getAnswer2(), q.getAnswer3(), 
@@ -26,6 +29,7 @@ public class DemoRessourceDecider extends JCasConsumer_ImplBase{
 		result.setAnswer2Possibility(0.65f);
 		result.setAnswer3Possibility(0.85f);
 		result.setAnswer4Possibility(0.25f);
+		result.setUsedTime((int) (System.currentTimeMillis() - startTime));
 		result.addToIndexes();
 	}
 

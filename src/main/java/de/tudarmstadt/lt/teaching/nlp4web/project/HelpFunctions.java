@@ -5,7 +5,11 @@ import java.util.regex.Pattern;
 
 public class HelpFunctions {
 
-	
+	/**
+	 * Cretes the opposite results of the given one
+	 * @param possibilities a float array with 4 entries
+	 * @return the opposite results of the given entries and normalized (all summed up are 1.0)
+	 */
 	public static float[] getOppositePossibilities(float[] possibilities) {
 		float newAnswer1Possibility = 1 - possibilities[0];
 		float newAnswer2Possibility = 1 - possibilities[1];
@@ -23,6 +27,11 @@ public class HelpFunctions {
 		return output;
 	}
 	
+	/**
+	 * Escapes all HTTP-Characters 
+	 * @param input
+	 * @return
+	 */
 	public static String escapeWebRequest(String input) {
 		input = input.replaceAll("\\%", "%25"); //Has to be first, because it would delete all % in all upcoming replacements
 		input = input.replaceAll(" ", "%20");
@@ -46,10 +55,16 @@ public class HelpFunctions {
 		return input;
 	}
 	
+	/**
+	 * Counts the amount of the given word in the given text (if word has multiple tokens, it will count for every token)
+	 * @param text 
+	 * @param word
+	 * @return
+	 */
 	public static int countWord(String text, String word){
         int count = 0;
         
-        //count for every word in variable word
+        //count for every token in variable word
         String[] parts = word.split(" ");
         for(int i = 0; i < parts.length; i++) {
 	        Pattern pat = Pattern.compile(Pattern.quote(parts[i].toLowerCase()));

@@ -15,7 +15,7 @@ public class WikipediaRequest {
 	private final String address2 = "&prop=revisions&rvprop=content";
 	private ArrayList<String> results;
 	
-	public WikipediaRequest(String request) {
+	public WikipediaRequest(String request, boolean useDisambiguations) {
 		results = new ArrayList<>();
 		
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
@@ -26,6 +26,7 @@ public class WikipediaRequest {
 		Pattern pattern = Pattern.compile("#REDIRECT\\s\\[\\[(.*?)\\]\\]");
 		Matcher matcher = pattern.matcher(results.get(0));
 		
+		//if so, get all (commonly only one) redirects
 		while (matcher.find()) {
 		    if(matcher.group(1) != null) {
 		    	results = new ArrayList<>();
@@ -34,19 +35,24 @@ public class WikipediaRequest {
 		}
 		
 		//Are there disambiguations?
-//		if(results.get(0).contains("may refer to:")) {
-//			pattern = Pattern.compile("\\[\\[(.*?)\\]\\]");
-//			matcher = pattern.matcher(results.get(0));
-//			
-//			results = new ArrayList<>();
-//			while (matcher.find()) {
-//			    if(matcher.group(1) != null) {
-//			    	results.add(serverConnection.getJSONFromUrl(address + HelpFunctions.escapeWebRequest(matcher.group(1)) + address2, params));
-//			    }
-//			}
-//		}
+		if(useDisambiguations && results.get(0).contains("may refer to:")) {
+			pattern = Pattern.compile("\\[\\[(.*?)\\]\\]");
+			matcher = pattern.matcher(results.get(0));
+			
+			results = new ArrayList<>();
+			while (matcher.find()) {
+			    if(matcher.group(1) != null) {
+			    	results.add(serverConnection.getJSONFromUrl(address + HelpFunctions.escapeWebRequest(matcher.group(1)) + address2, params));
+			    }
+			}
+		}
 	}
 	
+	/**
+	 * Counts the occurence of given word in all found textes
+	 * @param keyWord
+	 * @return
+	 */
 	public int getAmountInText(String keyWord) {
 		int output = 0;
 		for(int i = 0; i < results.size(); i++) {
@@ -54,7 +60,5 @@ public class WikipediaRequest {
 		}
 		
 		return output;
-	}
-	
-	
+	}	
 }

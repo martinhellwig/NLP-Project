@@ -11,8 +11,8 @@ import org.apache.uima.jcas.tcas.Annotation;
 
 
 /** 
- * Updated by JCasGen Sat Jan 03 12:08:05 CET 2015
- * XML source: C:/Users/Martin/workspace/de.tudarmstadt.lt.teaching.nlp4web.project/src/main/resources/desc/type/Result.xml
+ * Updated by JCasGen Tue Jan 27 18:58:53 CET 2015
+ * XML source: C:/Users/Martin/workspace/NLP-Project/src/main/resources/desc/type/Result.xml
  * @generated */
 public class Result extends Annotation {
   /** @generated
@@ -184,6 +184,28 @@ public class Result extends Annotation {
     if (Result_Type.featOkTst && ((Result_Type)jcasType).casFeat_answer4Possibility == null)
       jcasType.jcas.throwFeatMissing("answer4Possibility", "de.tudarmstadt.ukp.teaching.general.type.Result");
     jcasType.ll_cas.ll_setFloatValue(addr, ((Result_Type)jcasType).casFeatCode_answer4Possibility, v);}    
+   
+    
+  //*--------------*
+  //* Feature: usedTime
+
+  /** getter for usedTime - gets 
+   * @generated
+   * @return value of the feature 
+   */
+  public int getUsedTime() {
+    if (Result_Type.featOkTst && ((Result_Type)jcasType).casFeat_usedTime == null)
+      jcasType.jcas.throwFeatMissing("usedTime", "de.tudarmstadt.ukp.teaching.general.type.Result");
+    return jcasType.ll_cas.ll_getIntValue(addr, ((Result_Type)jcasType).casFeatCode_usedTime);}
+    
+  /** setter for usedTime - sets  
+   * @generated
+   * @param v value to set into the feature 
+   */
+  public void setUsedTime(int v) {
+    if (Result_Type.featOkTst && ((Result_Type)jcasType).casFeat_usedTime == null)
+      jcasType.jcas.throwFeatMissing("usedTime", "de.tudarmstadt.ukp.teaching.general.type.Result");
+    jcasType.ll_cas.ll_setIntValue(addr, ((Result_Type)jcasType).casFeatCode_usedTime, v);}    
   }
 
     

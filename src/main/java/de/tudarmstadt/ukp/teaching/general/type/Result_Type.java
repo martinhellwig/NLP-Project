@@ -14,7 +14,7 @@ import org.apache.uima.cas.Feature;
 import org.apache.uima.jcas.tcas.Annotation_Type;
 
 /** 
- * Updated by JCasGen Sat Jan 03 12:08:05 CET 2015
+ * Updated by JCasGen Tue Jan 27 18:58:53 CET 2015
  * @generated */
 public class Result_Type extends Annotation_Type {
   /** @generated 
@@ -165,6 +165,30 @@ public class Result_Type extends Annotation_Type {
     ll_cas.ll_setFloatValue(addr, casFeatCode_answer4Possibility, v);}
     
   
+ 
+  /** @generated */
+  final Feature casFeat_usedTime;
+  /** @generated */
+  final int     casFeatCode_usedTime;
+  /** @generated
+   * @param addr low level Feature Structure reference
+   * @return the feature value 
+   */ 
+  public int getUsedTime(int addr) {
+        if (featOkTst && casFeat_usedTime == null)
+      jcas.throwFeatMissing("usedTime", "de.tudarmstadt.ukp.teaching.general.type.Result");
+    return ll_cas.ll_getIntValue(addr, casFeatCode_usedTime);
+  }
+  /** @generated
+   * @param addr low level Feature Structure reference
+   * @param v value to set 
+   */    
+  public void setUsedTime(int addr, int v) {
+        if (featOkTst && casFeat_usedTime == null)
+      jcas.throwFeatMissing("usedTime", "de.tudarmstadt.ukp.teaching.general.type.Result");
+    ll_cas.ll_setIntValue(addr, casFeatCode_usedTime, v);}
+    
+  
 
 
 
@@ -196,6 +220,10 @@ public class Result_Type extends Annotation_Type {
  
     casFeat_answer4Possibility = jcas.getRequiredFeatureDE(casType, "answer4Possibility", "uima.cas.Float", featOkTst);
     casFeatCode_answer4Possibility  = (null == casFeat_answer4Possibility) ? JCas.INVALID_FEATURE_CODE : ((FeatureImpl)casFeat_answer4Possibility).getCode();
+
+ 
+    casFeat_usedTime = jcas.getRequiredFeatureDE(casType, "usedTime", "uima.cas.Integer", featOkTst);
+    casFeatCode_usedTime  = (null == casFeat_usedTime) ? JCas.INVALID_FEATURE_CODE : ((FeatureImpl)casFeat_usedTime).getCode();
 
   }
 }

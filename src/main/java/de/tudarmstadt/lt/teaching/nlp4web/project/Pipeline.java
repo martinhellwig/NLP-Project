@@ -15,9 +15,10 @@ import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 
+import de.tudarmstadt.lt.teaching.nlp4web.project.decider.BingAmountDecider;
 import de.tudarmstadt.lt.teaching.nlp4web.project.decider.BingLookPagesDecider;
+import de.tudarmstadt.lt.teaching.nlp4web.project.decider.WikipediaAmountAnswersDecider;
 import de.tudarmstadt.lt.teaching.nlp4web.project.decider.WikipediaAmountQuestionDecider;
-import de.tudarmstadt.lt.teaching.nlp4web.project.decider.YahooAnswersAmountDecider;
 import de.tudarmstadt.lt.teaching.nlp4web.project.objects.ChosenOnes;
 import de.tudarmstadt.lt.teaching.nlp4web.project.objects.QuestionObject;
 import de.tudarmstadt.ukp.dkpro.core.stanfordnlp.StanfordLemmatizer;
@@ -30,9 +31,11 @@ public class Pipeline {
 
 	public static void main(String[] args)
 	    	throws UIMAException, IOException {
+		//Need this time to calculate time at the end
+		long startTime = System.currentTimeMillis();
+		
 		CollectionReader reader = createReader(TSVReader.class);
 		AnalysisEngine writer = createEngine(Evaluate.class);
-		
 		AnalysisEngine[] analysisEngines = getAnalysisEngines();
 		
 		if(analysisEngines.length == 1) SimplePipeline.runPipeline(reader, analysisEngines[0], writer);
@@ -48,10 +51,14 @@ public class Pipeline {
 				analysisEngines[1], analysisEngines[2], analysisEngines[3], analysisEngines[4], analysisEngines[5], 
 				writer);
 		
+		//Output the precisions of all used deciders and the overall one
 		System.out.println(100 * ((float) Evaluate.mainPrecision/ (float) Evaluate.amountData) + "% of all were chosen right");
 		for(int i = 0; i < Evaluate.precisions.size(); i++) {
 			System.out.println(100 * ((float) Evaluate.precisions.get(i)/ (float) Evaluate.amountData) + "% of " + Evaluate.names.get(i) + " were chosen right");
 		}
+		
+		//Calculation of needed time
+		System.out.println("Needed time overall: " + (System.currentTimeMillis() - startTime)/1000 + "s");
 	}
 
 	private static AnalysisEngine[] getAnalysisEngines() throws ResourceInitializationException {
@@ -59,9 +66,9 @@ public class Pipeline {
 		output[0] = createEngine(StanfordSegmenter.class); //Have to use this; Other ones need the segmentation     
 	    output[1] = createEngine(StanfordLemmatizer.class);
 	    output[2] = createEngine(StanfordPosTagger.class);
-	    output[3] = createEngine(BingLookPagesDecider.class);
+	    output[3] = createEngine(BingAmountDecider.class);
 	    output[4] = createEngine(WikipediaAmountQuestionDecider.class);
-	    output[5] = createEngine(YahooAnswersAmountDecider.class);
+	    output[5] = createEngine(WikipediaAmountAnswersDecider.class);
 
 	    return output;
 	}
@@ -73,6 +80,7 @@ public class Pipeline {
     	jcas.setDocumentLanguage("en");
     	jcas.setDocumentText(questionObject.getQuestion());
     	
+    	//set the answers and question to jcas-object
     	Question question = new Question(jcas);
     	question.setBegin(0);
     	question.setEnd(questionObject.getQuestion().length());
@@ -97,7 +105,7 @@ public class Pipeline {
 		ArrayList<ChosenOnes> results = new ArrayList<>();
 		for (Result s : JCasUtil.select(jcas, Result.class)) { 
 			results.add(new ChosenOnes(s.getRessouceType(), s.getAnswer1Possibility(), 
-					s.getAnswer2Possibility(), s.getAnswer3Possibility(), s.getAnswer4Possibility()));
+					s.getAnswer2Possibility(), s.getAnswer3Possibility(), s.getAnswer4Possibility(), s.getUsedTime()));
 		}
 		return results;
 	}	
