@@ -17,6 +17,7 @@ public class YahooAnswersAmountDecider extends JCasConsumer_ImplBase {
 	public void process(JCas jcas) throws AnalysisEngineProcessException {
 		long startTime = System.currentTimeMillis(); //Need to calculate time for this decider
 		
+		//Create the question-object out of jcas-data
 		QuestionObject question = null;
 		for (Question q : JCasUtil.select(jcas, Question.class)) {
 			question = new QuestionObject(q.getQuestion(), q.getAnswer1(),
@@ -24,19 +25,14 @@ public class YahooAnswersAmountDecider extends JCasConsumer_ImplBase {
 					RightAnswer.valueOf(q.getRightAnswer()));
 		}
 
-		YahooAnswersRequest answer1Request = new YahooAnswersRequest(
-				question.getAnswer1());
-		int answer1 = answer1Request.getAmountInText(question.getAnswer1());
-		YahooAnswersRequest answer2Request = new YahooAnswersRequest(
-				question.getAnswer2());
-		int answer2 = answer2Request.getAmountInText(question.getAnswer2());
-		YahooAnswersRequest answer3Request = new YahooAnswersRequest(
-				question.getAnswer3());
-		int answer3 = answer3Request.getAmountInText(question.getAnswer3());
-		YahooAnswersRequest answer4Request = new YahooAnswersRequest(
-				question.getAnswer4());
-		int answer4 = answer4Request.getAmountInText(question.getAnswer4());
+		//Ask the question in yahooAnswers and count how often each of the answers occur
+		YahooAnswersRequest yahooRequest = new YahooAnswersRequest(question.getQuestion());
+		int answer1 = yahooRequest.getAmountInText(question.getAnswer1());
+		int answer2 = yahooRequest.getAmountInText(question.getAnswer2());
+		int answer3 = yahooRequest.getAmountInText(question.getAnswer3());
+		int answer4 = yahooRequest.getAmountInText(question.getAnswer4());
 
+		//If no noun of the answers was found anywhere, set possibilities to 25% each
 		if (answer1 == 0 && answer2 == 0 && answer3 == 0 && answer4 == 0) {
 			answer1++;
 			answer2++;
@@ -44,6 +40,7 @@ public class YahooAnswersAmountDecider extends JCasConsumer_ImplBase {
 			answer4++;
 		}
 
+		//Write back the possibilities of each answer
 		float amountOfAll = answer1 + answer2 + answer3 + answer4;
 		Result result = new Result(jcas);
 		result.setRessouceType("Yahoo Answers Amount");

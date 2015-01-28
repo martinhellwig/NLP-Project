@@ -23,6 +23,7 @@ public class YahooAnswersRequest {
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
 		ServerConnection serverConnection = new ServerConnection();
 
+		//Retrieve all possible questioned questions that match the given one
 		Document d = null;
 		try {
 			d = Jsoup
@@ -37,6 +38,7 @@ public class YahooAnswersRequest {
 
 		resultsFound = false;
 
+		//Select the first question of Yahoo Answer and get the answers
 		Element answer = allAnswers.select("li").first();
 		if (answer != null) {
 			resultsFound = true;
@@ -46,6 +48,7 @@ public class YahooAnswersRequest {
 
 			params = new ArrayList<NameValuePair>();
 			serverConnection = new ServerConnection();
+			//Stores the answers of this question
 			searchResults = serverConnection.getJSONFromUrl(addressAnswer
 					+ HelpFunctions.escapeWebRequest(answerID), params);
 		}

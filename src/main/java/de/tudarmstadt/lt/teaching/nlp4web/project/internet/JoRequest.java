@@ -22,7 +22,7 @@ public class JoRequest {
 	}
 	
 	/**
-	 * Returns similar words to the given one
+	 * Returns similar words (nouns) to the given one
 	 * @param maxAmount
 	 * @return
 	 */

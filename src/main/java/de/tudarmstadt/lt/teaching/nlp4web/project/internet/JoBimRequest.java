@@ -22,7 +22,7 @@ public class JoBimRequest {
 	}
 	
 	/**
-	 * Says if the whole sentence is negotiated (if there is a negotiation and this is not bound to a noun
+	 * Says if the whole sentence is negotiated (if there is a negotiation and this is bound to a verb)
 	 * @return
 	 */
 	public boolean isWholeSentenceNegotiated() {

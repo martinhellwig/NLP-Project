@@ -60,30 +60,35 @@ public class Evaluate extends JCasConsumer_ImplBase {
 			
 			//Check if this decider found the right answer; if so, increment the overall counter for this decider
 			boolean foundRightAnswer = false;
-			if(chosenOne.getPossibilityAnswer1() >= chosenOne.getPossibilityAnswer2() && 
-					chosenOne.getPossibilityAnswer1() >= chosenOne.getPossibilityAnswer3() &&
-					chosenOne.getPossibilityAnswer1() >= chosenOne.getPossibilityAnswer4() &&
-					question.getRightAnswer() == RightAnswer.FIRST) {
-				precisions.set(deciderID, precisions.get(deciderID) + 1);
-				foundRightAnswer = true;
-			} else if(chosenOne.getPossibilityAnswer2() >= chosenOne.getPossibilityAnswer1() &&
-					chosenOne.getPossibilityAnswer2() >= chosenOne.getPossibilityAnswer3() &&
-					chosenOne.getPossibilityAnswer2() >= chosenOne.getPossibilityAnswer4() &&
-					question.getRightAnswer() == RightAnswer.SECOND) {
-				precisions.set(deciderID, precisions.get(deciderID) + 1);
-				foundRightAnswer = true;
-			} else if(chosenOne.getPossibilityAnswer3() >= chosenOne.getPossibilityAnswer1() &&
-					chosenOne.getPossibilityAnswer3() >= chosenOne.getPossibilityAnswer2() &&
-					chosenOne.getPossibilityAnswer3() >= chosenOne.getPossibilityAnswer4() &&
-					question.getRightAnswer() == RightAnswer.THIRD) {
-				precisions.set(deciderID, precisions.get(deciderID) + 1);
-				foundRightAnswer = true;
-			} else if(chosenOne.getPossibilityAnswer4() >= chosenOne.getPossibilityAnswer1() &&
-					chosenOne.getPossibilityAnswer4() >= chosenOne.getPossibilityAnswer2() &&
-							chosenOne.getPossibilityAnswer4() >= chosenOne.getPossibilityAnswer3() &&
-					question.getRightAnswer() == RightAnswer.FOURTH) {
-				precisions.set(deciderID, precisions.get(deciderID) + 1);
-				foundRightAnswer = true;
+			if(!(chosenOne.getPossibilityAnswer1() == 0.25 &&
+					chosenOne.getPossibilityAnswer2() == 0.25 &&
+					chosenOne.getPossibilityAnswer3() == 0.25 &&
+					chosenOne.getPossibilityAnswer4() == 0.25)) { //if all answers have a possibility of 25%, don't go on with this one
+				if(chosenOne.getPossibilityAnswer1() >= chosenOne.getPossibilityAnswer2() && 
+						chosenOne.getPossibilityAnswer1() >= chosenOne.getPossibilityAnswer3() &&
+						chosenOne.getPossibilityAnswer1() >= chosenOne.getPossibilityAnswer4() &&
+						question.getRightAnswer() == RightAnswer.FIRST) {
+					precisions.set(deciderID, precisions.get(deciderID) + 1);
+					foundRightAnswer = true;
+				} else if(chosenOne.getPossibilityAnswer2() >= chosenOne.getPossibilityAnswer1() &&
+						chosenOne.getPossibilityAnswer2() >= chosenOne.getPossibilityAnswer3() &&
+						chosenOne.getPossibilityAnswer2() >= chosenOne.getPossibilityAnswer4() &&
+						question.getRightAnswer() == RightAnswer.SECOND) {
+					precisions.set(deciderID, precisions.get(deciderID) + 1);
+					foundRightAnswer = true;
+				} else if(chosenOne.getPossibilityAnswer3() >= chosenOne.getPossibilityAnswer1() &&
+						chosenOne.getPossibilityAnswer3() >= chosenOne.getPossibilityAnswer2() &&
+						chosenOne.getPossibilityAnswer3() >= chosenOne.getPossibilityAnswer4() &&
+						question.getRightAnswer() == RightAnswer.THIRD) {
+					precisions.set(deciderID, precisions.get(deciderID) + 1);
+					foundRightAnswer = true;
+				} else if(chosenOne.getPossibilityAnswer4() >= chosenOne.getPossibilityAnswer1() &&
+						chosenOne.getPossibilityAnswer4() >= chosenOne.getPossibilityAnswer2() &&
+								chosenOne.getPossibilityAnswer4() >= chosenOne.getPossibilityAnswer3() &&
+						question.getRightAnswer() == RightAnswer.FOURTH) {
+					precisions.set(deciderID, precisions.get(deciderID) + 1);
+					foundRightAnswer = true;
+				}
 			}
 			
 			//Output some info of this decider for user

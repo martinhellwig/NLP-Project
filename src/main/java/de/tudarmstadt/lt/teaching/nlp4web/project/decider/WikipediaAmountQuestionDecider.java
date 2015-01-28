@@ -20,15 +20,16 @@ import de.tudarmstadt.ukp.teaching.general.type.Result;
 
 public class WikipediaAmountQuestionDecider extends JCasConsumer_ImplBase{
 	
-	private static final boolean USE_JOES = true;
+	private static final boolean USE_JOES = false;
 	private static final boolean USE_NEGOTIATION_PER_NOUN = true;
-	private static final boolean USE_NEGOTIATION_PER_SENTENCE = true;
+	private static final boolean USE_NEGOTIATION_PER_SENTENCE = false;
 	private static final boolean USE_DISAMBIGUATIONS = true;	
 
 	@Override
 	public void process(JCas jcas) throws AnalysisEngineProcessException {
 		long startTime = System.currentTimeMillis(); //Need to calculate time for this decider
 		
+		//Create the question-object out of jcas-data
 		QuestionObject question = null;
 		for (Question q : JCasUtil.select(jcas, Question.class)) { 
 			question = new QuestionObject(q.getQuestion(), q.getAnswer1(), q.getAnswer2(), q.getAnswer3(), 
@@ -40,9 +41,10 @@ public class WikipediaAmountQuestionDecider extends JCasConsumer_ImplBase{
 		float amountAnswer3 = 0;
 		float amountAnswer4 = 0;	
 		
-		//Do JoBim things
+		//Do JoBim things to find out if something is negotiated
 		JoBimRequest joBimRequest = new JoBimRequest(question.getQuestion());
-		ArrayList<String> negotiatedNouns = joBimRequest.getNegotiatedNouns();
+		//a list with nouns of the question, which were meant negotiated
+		ArrayList<String> negotiatedNouns = joBimRequest.getNegotiatedNouns(); 
 		
 		for(POS pos : JCasUtil.select(jcas, POS.class)) {
 			if(pos.getPosValue().contains("NN")) {
@@ -60,14 +62,15 @@ public class WikipediaAmountQuestionDecider extends JCasConsumer_ImplBase{
 							similarWords.add(lemma.getValue());
 						}
 						
-						//Now make a wiki-request for all similar words
+						//Now make a wiki-request for all words
 						for(int i = 0; i < similarWords.size(); i++) {
-							WikipediaRequest wikiRequest = new WikipediaRequest(lemma.getValue(), USE_DISAMBIGUATIONS);
+							WikipediaRequest wikiRequest = new WikipediaRequest(similarWords.get(i), USE_DISAMBIGUATIONS);
 							int answer1 = wikiRequest.getAmountInText(question.getAnswer1());
 							int answer2 = wikiRequest.getAmountInText(question.getAnswer2());
 							int answer3 = wikiRequest.getAmountInText(question.getAnswer3());
 							int answer4 = wikiRequest.getAmountInText(question.getAnswer4());
 							
+							//If no noun of the answers was found in the gotten text, set possibilities to 25% each
 							if(answer1 == 0 && answer2 == 0 && answer3 == 0 && answer4 == 0) {
 								answer1++;
 								answer2++;
@@ -77,12 +80,11 @@ public class WikipediaAmountQuestionDecider extends JCasConsumer_ImplBase{
 							int amountAll = answer1 + answer2 + answer3 + answer4;
 							
 							
-							//Now change all values to the opposite if this noun is negotiated
+							//Now change all values to the opposite, if this noun is negotiated
 							boolean foundNounAsNegotiated = false;
 							for(String negotiatedNoun : negotiatedNouns) {
 								if(negotiatedNoun.equals(lemma.getValue())) foundNounAsNegotiated = true;
 							}
-							
 							if(USE_NEGOTIATION_PER_NOUN && foundNounAsNegotiated) {
 								float[] toNegotiate = {(float) answer1 / (float) amountAll, 
 										(float) answer2 / (float) amountAll, 
@@ -106,6 +108,7 @@ public class WikipediaAmountQuestionDecider extends JCasConsumer_ImplBase{
 			}
 		}
 		
+		//Write back the possibilities of each answer
 		float amountOfAll = amountAnswer1 + amountAnswer2 + amountAnswer3 + amountAnswer4;
 		Result result = new Result(jcas);
 		result.setRessouceType("Wikipedia Amount (Question)");

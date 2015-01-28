@@ -22,13 +22,14 @@ import de.tudarmstadt.ukp.teaching.general.type.Result;
 
 public class BingLookPagesDecider extends JCasConsumer_ImplBase{
 	
-	private static final boolean USE_NEGOTIATION_PER_SENTENCE = true;
+	private static final boolean USE_NEGOTIATION_PER_SENTENCE = false;
 	private static final int AMOUNT_USAGE_URLS = 3;
 
 	@Override
 	public void process(JCas jcas) throws AnalysisEngineProcessException {
 		long startTime = System.currentTimeMillis(); //Need to calculate time for this decider
 		
+		//Create the question-object out of jcas-data
 		QuestionObject question = null;
 		for (Question q : JCasUtil.select(jcas, Question.class)) { 
 			question = new QuestionObject(q.getQuestion(), q.getAnswer1(), q.getAnswer2(), q.getAnswer3(), 
@@ -57,12 +58,14 @@ public class BingLookPagesDecider extends JCasConsumer_ImplBase{
 		    }
 		}
 		
-		//Do JoBim things
+		//Do JoBim things to find out if something is negotiated
 		JoBimRequest joBimRequest = new JoBimRequest(question.getQuestion());
 		
+		//request the question (or the quoted term) to bing and get the content of the first few pages
 		BingRequest request = new BingRequest(requestToAsk);
 		ArrayList<String> urls = request.getResultURLs(AMOUNT_USAGE_URLS);
 		
+		//Now look in each retrieved page if there occurs the answer-terms
 		for(int i = 0; i < urls.size(); i++) {
 			String temp;
 			try {
@@ -75,6 +78,7 @@ public class BingLookPagesDecider extends JCasConsumer_ImplBase{
 			}
 		}
 		
+		//If no term was found on any page, set the possibility of all four to 25%
 		if(amountAnswer1 == 0 && amountAnswer2 == 0 && amountAnswer3 == 0 && amountAnswer4 == 0) {
 			amountAnswer1++;
 			amountAnswer2++;
@@ -84,6 +88,7 @@ public class BingLookPagesDecider extends JCasConsumer_ImplBase{
 		
 		int amountOfAll = amountAnswer1 + amountAnswer2 + amountAnswer3 + amountAnswer4;
 		
+		//Write back the possibilities of each answer
 		Result result = new Result(jcas);
 		result.setRessouceType("Bing Look Pages");
 		

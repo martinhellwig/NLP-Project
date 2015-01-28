@@ -83,6 +83,7 @@ public class View extends JFrame{
 		this.getResultButton.setText("Get Result");
 		this.getResultButton.setBounds(215, 190, 150, 40);
 		getContentPane().add(this.getResultButton);
+		
 		this.newGameButton = new JButton();
 		this.newGameButton.setText("New Game");
 		this.newGameButton.setBounds(430, 370, 150, 40);
@@ -115,6 +116,7 @@ public class View extends JFrame{
 		float possibilityThree = 0;
 		float possibilityFour = 0;
 		
+		//Find out the possibilities for each decider
 		for(ChosenOnes chosenOne : results) {
 			possibilityOne += chosenOne.getPossibilityAnswer1();
 			possibilityTwo += chosenOne.getPossibilityAnswer2();
@@ -133,6 +135,7 @@ public class View extends JFrame{
 			else text += chosenOne.getRessourceName() + " says answer 4 is the right one<br>";
 		}
 		
+		//And now find out the overall possibilities and also the chosen answer
 		if(possibilityOne >= possibilityTwo && possibilityOne >= possibilityThree && possibilityOne >= possibilityFour) {
 			text += "Overall answer 1 should be the right one</html>";
 		}

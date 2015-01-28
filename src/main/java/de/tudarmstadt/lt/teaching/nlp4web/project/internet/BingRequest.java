@@ -22,6 +22,10 @@ public class BingRequest {
 		result = serverConnection.getJSONFromUrl(address + HelpFunctions.escapeWebRequest(request) + address2, params, APIKEY);
 	}
 	
+	/**
+	 * Looks how many results bing has found for this request
+	 * @return
+	 */
 	public int getResultAmount() {
 		JSONObject jsonData = new JSONObject(result);
 		JSONObject responseData = jsonData.getJSONObject("d");
@@ -29,6 +33,11 @@ public class BingRequest {
 		return Integer.parseInt((String) results.getJSONObject(0).get("WebTotal"));
 	}
 	
+	/**
+	 * Gets the first n urls, which were found by bing request
+	 * @param maxAmount
+	 * @return
+	 */
 	public ArrayList<String> getResultURLs(int maxAmount) {
 		ArrayList<String> output = new ArrayList<>();
 		

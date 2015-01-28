@@ -22,15 +22,17 @@ public class BingAmountDecider extends JCasConsumer_ImplBase{
 	public void process(JCas jcas) throws AnalysisEngineProcessException {
 		long startTime = System.currentTimeMillis(); //Need to calculate time for this decider
 		
+		//Create the question-object out of jcas-data
 		QuestionObject question = null;
 		for (Question q : JCasUtil.select(jcas, Question.class)) { 
 			question = new QuestionObject(q.getQuestion(), q.getAnswer1(), q.getAnswer2(), q.getAnswer3(), 
 					q.getAnswer4(), RightAnswer.valueOf(q.getRightAnswer()));
 		}
 		
-		//Do JoBim things
+		//Do JoBim things to find out if something is negotiated
 		JoBimRequest joBimRequest = new JoBimRequest(question.getQuestion());
 		
+		//ask the question together with each answer in bing and get  the amount of the results
 		BingRequest answer1Request = new BingRequest(question.getQuestion() + " " + question.getAnswer1());
 		int amountAnswer1 = answer1Request.getResultAmount();
 		BingRequest answer2Request = new BingRequest(question.getQuestion() + " " + question.getAnswer2());
@@ -41,9 +43,10 @@ public class BingAmountDecider extends JCasConsumer_ImplBase{
 		int amountAnswer4 = answer4Request.getResultAmount();
 		int amountOfAll = amountAnswer1 + amountAnswer2 + amountAnswer3 + amountAnswer4;
 		
-		
+		//Write back the possibilities of each answer
 		Result result = new Result(jcas);
 		result.setRessouceType("Bing Amount");
+		
 		if(USE_NEGOTIATION_PER_SENTENCE && joBimRequest.isWholeSentenceNegotiated()) {
 			float[] toNegotiate = {(float) amountAnswer1 / (float) amountOfAll, 
 					(float) amountAnswer2 / (float) amountOfAll, 
