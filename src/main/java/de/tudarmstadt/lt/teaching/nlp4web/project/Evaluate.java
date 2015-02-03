@@ -17,6 +17,7 @@ import de.tudarmstadt.ukp.teaching.general.type.Result;
 public class Evaluate extends JCasConsumer_ImplBase {
 	
 	public static ArrayList<Integer> precisions = new ArrayList<>(); //Holds the amount of right chosen answers of each decider-method
+	public static ArrayList<Integer> timeConsumptions = new ArrayList<>(); //Holds the amount of seconds used for all questions of each decider-method
 	public static ArrayList<String> names = new ArrayList<>(); //Holds the name of each decider-method
 	public static int mainPrecision; //amount of all right chosen answers
 	public static int amountData; //amount of all data
@@ -56,7 +57,11 @@ public class Evaluate extends JCasConsumer_ImplBase {
 			if(amountData == 0) {
 				names.add(chosenOne.getRessourceName());
 				precisions.add(0);
+				timeConsumptions.add(0);
 			}
+			
+			//Add the used time for this decider to the counter
+			timeConsumptions.set(deciderID, timeConsumptions.get(deciderID) + chosenOne.getUsedTimeInSeconds());
 			
 			//Check if this decider found the right answer; if so, increment the overall counter for this decider
 			boolean foundRightAnswer = false;

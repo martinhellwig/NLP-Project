@@ -126,26 +126,26 @@ public class View extends JFrame{
 			if(chosenOne.getPossibilityAnswer1() >= chosenOne.getPossibilityAnswer2() && 
 					chosenOne.getPossibilityAnswer1() >= chosenOne.getPossibilityAnswer3() &&
 					chosenOne.getPossibilityAnswer1() >= chosenOne.getPossibilityAnswer4())
-				text += chosenOne.getRessourceName() + " says answer 1 is the right one<br>";
+				text += chosenOne.getRessourceName() + " says answer 1 is the right one (Possibility of: " + chosenOne.getPossibilityAnswer1()*100 + "%)<br>";
 			else if(chosenOne.getPossibilityAnswer2() >= chosenOne.getPossibilityAnswer3() &&
 					chosenOne.getPossibilityAnswer2() >= chosenOne.getPossibilityAnswer4())
-				text += chosenOne.getRessourceName() + " says answer 2 is the right one<br>";
+				text += chosenOne.getRessourceName() + " says answer 2 is the right one (Possibility of: " + chosenOne.getPossibilityAnswer2()*100 + "%)<br>";
 			else if(chosenOne.getPossibilityAnswer3() >= chosenOne.getPossibilityAnswer4())
-				text += chosenOne.getRessourceName() + " says answer 3 is the right one<br>";
-			else text += chosenOne.getRessourceName() + " says answer 4 is the right one<br>";
+				text += chosenOne.getRessourceName() + " says answer 3 is the right one (Possibility of: " + chosenOne.getPossibilityAnswer3()*100 + "%)<br>";
+			else text += chosenOne.getRessourceName() + " says answer 4 is the right one (Possibility of: " + chosenOne.getPossibilityAnswer4()*100 + "%)<br>";
 		}
 		
 		//And now find out the overall possibilities and also the chosen answer
 		if(possibilityOne >= possibilityTwo && possibilityOne >= possibilityThree && possibilityOne >= possibilityFour) {
-			text += "Overall answer 1 should be the right one</html>";
+			text += "Overall answer 1 should be the right one (Possibility of: " + possibilityOne*100/results.size() + "%)</html>";
 		}
 		else if(possibilityTwo >= possibilityThree && possibilityTwo >= possibilityFour) {
-			text += "Overall answer 2 should be the right one</html>";
+			text += "Overall answer 2 should be the right one (Possibility of: " + possibilityTwo*100/results.size() + "%)</html>";
 		}
 		else if(possibilityThree >= possibilityFour) {
-			text += "Overall answer 3 should be the right one</html>";
+			text += "Overall answer 3 should be the right one (Possibility of: " + possibilityThree*100/results.size() + "%)</html>";
 		}
-		else text += "Overall answer 4 should be the right one</html>";
+		else text += "Overall answer 4 should be the right one (Possibility of: " + possibilityFour*100/results.size() + "%)</html>";
 		
 		this.resultLabel.setText(text);
 		this.repaint();

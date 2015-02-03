@@ -15,11 +15,9 @@ import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 
-import de.tudarmstadt.lt.teaching.nlp4web.project.decider.BingAmountDecider;
 import de.tudarmstadt.lt.teaching.nlp4web.project.decider.BingLookPagesDecider;
 import de.tudarmstadt.lt.teaching.nlp4web.project.decider.WikipediaAmountAnswersDecider;
 import de.tudarmstadt.lt.teaching.nlp4web.project.decider.WikipediaAmountQuestionDecider;
-import de.tudarmstadt.lt.teaching.nlp4web.project.decider.YahooAnswersAmountDecider;
 import de.tudarmstadt.lt.teaching.nlp4web.project.objects.ChosenOnes;
 import de.tudarmstadt.lt.teaching.nlp4web.project.objects.QuestionObject;
 import de.tudarmstadt.ukp.dkpro.core.stanfordnlp.StanfordLemmatizer;
@@ -52,10 +50,11 @@ public class Pipeline {
 				analysisEngines[1], analysisEngines[2], analysisEngines[3], analysisEngines[4], analysisEngines[5], 
 				writer);
 		
-		//Output the precisions of all used deciders and the overall one
+		//Output the precisions and time consumption of all used deciders and the overall one
 		System.out.println(100 * ((float) Evaluate.mainPrecision/ (float) Evaluate.amountData) + "% of all were chosen right");
 		for(int i = 0; i < Evaluate.precisions.size(); i++) {
 			System.out.println(100 * ((float) Evaluate.precisions.get(i)/ (float) Evaluate.amountData) + "% of " + Evaluate.names.get(i) + " were chosen right");
+			System.out.println("This decider needed in average " + Evaluate.timeConsumptions.get(i)/Evaluate.amountData + " seconds for each answer\n");
 		}
 		
 		//Calculation of needed time
@@ -63,7 +62,7 @@ public class Pipeline {
 	}
 
 	private static AnalysisEngine[] getAnalysisEngines() throws ResourceInitializationException {
-		AnalysisEngine[] output = new AnalysisEngine[4];
+		AnalysisEngine[] output = new AnalysisEngine[6];
 		output[0] = createEngine(StanfordSegmenter.class); //Have to use this; Other ones need the segmentation     
 	    output[1] = createEngine(StanfordLemmatizer.class);
 	    output[2] = createEngine(StanfordPosTagger.class);
